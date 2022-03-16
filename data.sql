@@ -46,7 +46,8 @@ create table product (
 	product_name VARCHAR(50) NOT NULL,
 	sell_price DECIMAL(6,2) NOT NULL,
 	category_id INT NOT NULL,
-    CONSTRAINT FK_CategoryDd FOREIGN KEY (category_id) REFERENCES category(category_id)
+    CONSTRAINT FK_CategoryDd FOREIGN KEY (category_id) REFERENCES category(category_id),
+    CHECK (sell_price>0)
 );
 -- HATS
 insert into product (productid, product_name, sell_price, category_id) values (1, 'Brown Brim', 25.00, 1);
@@ -94,7 +95,8 @@ insert into product (productid, product_name, sell_price, category_id) values (3
 create table costprice(
     productid BIGSERIAL UNIQUE,
 	cost_price DECIMAL(6,2) NOT NULL,
-    CONSTRAINT FK_Productid FOREIGN KEY (productid) REFERENCES product(productid)
+    CONSTRAINT FK_Productid FOREIGN KEY (productid) REFERENCES product(productid),
+    CHECK (cost_price>0)
 );
 insert into costprice(productid,cost_price) values (1, 10);
 insert into costprice(productid,cost_price) values (2, 10);
@@ -136,7 +138,8 @@ insert into costprice(productid,cost_price) values (35, 10);
 create table currentstock(
     productid INT NOT NULL,
     quantity int not NULL,
-    CONSTRAINT FK_ProductCode FOREIGN KEY (productid) REFERENCES product(productid)
+    CONSTRAINT FK_ProductCode FOREIGN KEY (productid) REFERENCES product(productid),
+    CHECK (quantity>=0)
 );
 -- for i in range(2000,2020):
 --   print('insert into currentstock (productid, quantity) values ('+ str(i) +', '+  str(random.randint(10,35)) +');')
@@ -183,20 +186,33 @@ create table purchaseinfo(
     quantity int not null,
     totalcost int not null,
     CONSTRAINT FK_ProductId FOREIGN KEY (productid) REFERENCES product(productid),
-    CONSTRAINT FK_SupplierId FOREIGN KEY (supplierid) REFERENCES supplier(supplierid)
+    CONSTRAINT FK_SupplierId FOREIGN KEY (supplierid) REFERENCES supplier(supplierid),
+    CHECK(quantity>0),
+    CHECK(totalcost>0)
 );
 
 create table customer (
 	id BIGSERIAL PRIMARY KEY UNIQUE,
 	name VARCHAR(100) NOT NULL,
-	email VARCHAR(100) NOT NULL,
-	password VARCHAR(50)  NOT NULL
+	email VARCHAR(100) NOT NULL
 );
-insert into customer (id, name, email, password) values (1, 'Aubrie Raubenheim', 'c@c.com', 'root');
-insert into customer (id, name, email, password) values (2, 'Salvador Cockran', 'scockran1@cloudflare.com', 'root');
-insert into customer (id, name, email, password) values (3, 'Kamillah Neward', 'kneward2@house.gov', 'root');
-insert into customer (id, name, email, password) values (4, 'Ninon Frissell', 'nfrissell3@pinterest.com', 'root');
-insert into customer (id, name, email, password) values (5, 'Calvin Oldacre', 'coldacre4@cafepress.com', 'root');
+insert into customer (id, name, email) values (1, 'Aubrie Raubenheim', 'c@c.com');
+insert into customer (id, name, email) values (2, 'Salvador Cockran', 'scockran1@cloudflare.com');
+insert into customer (id, name, email) values (3, 'Kamillah Neward', 'kneward2@house.gov');
+insert into customer (id, name, email) values (4, 'Ninon Frissell', 'nfrissell3@pinterest.com');
+insert into customer (id, name, email) values (5, 'Calvin Oldacre', 'coldacre4@cafepress.com');
+
+create table password(
+    customer_id BIGSERIAL UNIQUE,
+    password VARCHAR(50)  NOT NULL,
+    CONSTRAINT FK_CustomerID FOREIGN KEY (customer_id) REFERENCES customer(id)
+);
+insert into password (customer_id,password) values (1,'root');
+insert into password (customer_id,password) values (2,'root');
+insert into password (customer_id,password) values (3,'root');
+insert into password (customer_id,password) values (4,'root');
+insert into password (customer_id,password) values (5,'root');
+
 
 create table salesinfo(
     saleid BIGSERIAL PRIMARY KEY UNIQUE,
@@ -205,6 +221,9 @@ create table salesinfo(
     customer_id BIGSERIAL UNIQUE,
     quantity int not null,
     totalcost int not null,
+    payment_method varchar(45) not null default 'credit card',
     CONSTRAINT FK_ProductId FOREIGN KEY (productid) REFERENCES product(productid),
-    CONSTRAINT FK_CustomerCode FOREIGN KEY (customer_id) REFERENCES customer(id)
+    CONSTRAINT FK_CustomerCode FOREIGN KEY (customer_id) REFERENCES customer(id),
+    CHECK(quantity>0),
+    CHECK(totalcost>0)
 );

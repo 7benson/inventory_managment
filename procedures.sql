@@ -73,7 +73,8 @@ call purchase_from_supplier(1,2,5);
 create or replace procedure customer_purchase(
     productid_inp int,
     customer_id_inp int,
-    quantity_inp int
+    quantity_inp int,
+    payment_method_inp varchar(45)
 )
 language plpgsql    
 as $$
@@ -87,9 +88,32 @@ begin
     from product
     where productid=productid_inp;
     
-    insert into salesinfo(productid,customer_id,quantity,totalcost)
-    values (productid_inp,customer_id_inp,quantity_inp,sell_price_local*quantity_inp);
+    insert into salesinfo(productid,customer_id,quantity,totalcost,payment_method)
+    values (productid_inp,customer_id_inp,quantity_inp,sell_price_local*quantity_inp,payment_method_inp);
 commit;
 end;$$;
 
-call customer_purchase(2,1,2);
+call customer_purchase(2,1,2,'debit card');
+
+-- revenue of the inventory
+create function profit()
+returns int
+language plpgsql
+as $$
+declare
+    purchase_amount int;
+    revenue_amount int;
+begin
+   
+   select sum(totalcost) into purchase_amount
+   from purchaseinfo;
+   
+   select sum(totalcost) into revenue_amount
+   from salesinfo;
+
+   return (revenue_amount-purchase_amount);
+end;
+$$;
+select profit();
+
+
