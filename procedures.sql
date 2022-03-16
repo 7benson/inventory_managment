@@ -95,7 +95,7 @@ end;$$;
 
 call customer_purchase(2,1,2,'debit card');
 
--- revenue of the inventory
+-- profit of the inventory
 create function profit()
 returns int
 language plpgsql
