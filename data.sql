@@ -53,47 +53,47 @@ create table product (
     CHECK (sell_price>0)
 );
 -- HATS
-insert into product (productid, product_name, sell_price, category_id) values (1, 'Brown Brim', 25.00, 1);
-insert into product (productid, product_name, sell_price, category_id) values (2, 'Blue Beanie', 18.00, 1);
-insert into product (productid, product_name, sell_price, category_id) values (3, 'Brown Cowboy', 35.00, 1);
-insert into product (productid, product_name, sell_price, category_id) values (4, 'Grey Brim', 25.00, 1);
-insert into product (productid, product_name, sell_price, category_id) values (5, 'Green Beanie', 18.00, 1);
-insert into product (productid, product_name, sell_price, category_id) values (6, 'Palm Tree Cap', 14.00, 1);
-insert into product (productid, product_name, sell_price, category_id) values (7, 'Red Beanie', 18.00, 1);
-insert into product (productid, product_name, sell_price, category_id) values (8, 'Wolf Cap', 14.00, 1);
-insert into product (productid, product_name, sell_price, category_id) values (9, 'Blue Snapback', 16.00, 1);
+insert into product ( product_name, sell_price, category_id) values ('Brown Brim', 25.00, 1);
+insert into product ( product_name, sell_price, category_id) values ('Blue Beanie', 18.00, 1);
+insert into product ( product_name, sell_price, category_id) values ('Brown Cowboy', 35.00, 1);
+insert into product ( product_name, sell_price, category_id) values ('Grey Brim', 25.00, 1);
+insert into product ( product_name, sell_price, category_id) values ('Green Beanie', 18.00, 1);
+insert into product ( product_name, sell_price, category_id) values ('Palm Tree Cap', 14.00, 1);
+insert into product ( product_name, sell_price, category_id) values ('Red Beanie', 18.00, 1);
+insert into product ( product_name, sell_price, category_id) values ('Wolf Cap', 14.00, 1);
+insert into product ( product_name, sell_price, category_id) values ('Blue Snapback', 16.00, 1);
 
 -- Jackets
-insert into product (productid, product_name, sell_price, category_id) values (10, 'Black Jean Shearling', 125.00, 2);
-insert into product (productid, product_name, sell_price, category_id) values (11, 'Blue Jean Jacket', 90.00, 2);
-insert into product (productid, product_name, sell_price, category_id) values (12, 'Grey Jean Jacket', 90.00, 2);
-insert into product (productid, product_name, sell_price, category_id) values (13, 'Brown  Shearling', 165.00, 2);
-insert into product (productid, product_name, sell_price, category_id) values (14, 'Tan Trench', 185.00, 2);
+insert into product ( product_name, sell_price, category_id) values ( 'Black Jean Shearling', 125.00, 2);
+insert into product ( product_name, sell_price, category_id) values ( 'Blue Jean Jacket', 90.00, 2);
+insert into product ( product_name, sell_price, category_id) values ( 'Grey Jean Jacket', 90.00, 2);
+insert into product ( product_name, sell_price, category_id) values ( 'Brown  Shearling', 165.00, 2);
+insert into product ( product_name, sell_price, category_id) values ( 'Tan Trench', 185.00, 2);
 
 --SNEAKERS
-insert into product (productid, product_name, sell_price, category_id) values (15, 'Adidas NMD', 220.00, 3);
-insert into product (productid, product_name, sell_price, category_id) values (16, 'Adidas Yeezy', 280.00, 3);
-insert into product (productid, product_name, sell_price, category_id) values (17, 'Black Converse', 110.00, 3);
-insert into product (productid, product_name, sell_price, category_id) values (18, 'Nike White AirForce', 160.00, 3);
-insert into product (productid, product_name, sell_price, category_id) values (19, 'Nike Red High Tops', 160.00, 3);
-insert into product (productid, product_name, sell_price, category_id) values (20, 'Nike Brown High Tops', 160.00, 3);
-insert into product (productid, product_name, sell_price, category_id) values (21, 'Air Jordan Limited', 190.00, 3);
-insert into product (productid, product_name, sell_price, category_id) values (22, 'Timberlands', 200.00, 3);
+insert into product (product_name, sell_price, category_id) values ('Adidas NMD', 220.00, 3);
+insert into product (product_name, sell_price, category_id) values ('Adidas Yeezy', 280.00, 3);
+insert into product (product_name, sell_price, category_id) values ('Black Converse', 110.00, 3);
+insert into product (product_name, sell_price, category_id) values ('Nike White AirForce', 160.00, 3);
+insert into product (product_name, sell_price, category_id) values ('Nike Red High Tops', 160.00, 3);
+insert into product (product_name, sell_price, category_id) values ('Nike Brown High Tops', 160.00, 3);
+insert into product (product_name, sell_price, category_id) values ('Air Jordan Limited', 190.00, 3);
+insert into product (product_name, sell_price, category_id) values ('Timberlands', 200.00, 3);
 -- WOMENS
-insert into product (productid, product_name, sell_price, category_id) values (23, 'Blue Tanktop', 25.00, 4);
-insert into product (productid, product_name, sell_price, category_id) values (24, 'Floral Blouse', 20.00, 4);
-insert into product (productid, product_name, sell_price, category_id) values (25, 'Floral Dress', 80.00, 4);
-insert into product (productid, product_name, sell_price, category_id) values (26, 'Red Dots Dress', 80.00, 4);
-insert into product (productid, product_name, sell_price, category_id) values (27, 'Striped Sweater', 45.00, 4);
-insert into product (productid, product_name, sell_price, category_id) values (28, 'Yellow Track Suit', 135.00, 4);
-insert into product (productid, product_name, sell_price, category_id) values (29, 'White Blouse', 20.00, 4);
+insert into product (product_name, sell_price, category_id) values ('Blue Tanktop', 25.00, 4);
+insert into product (product_name, sell_price, category_id) values ('Floral Blouse', 20.00, 4);
+insert into product (product_name, sell_price, category_id) values ('Floral Dress', 80.00, 4);
+insert into product (product_name, sell_price, category_id) values ('Red Dots Dress', 80.00, 4);
+insert into product (product_name, sell_price, category_id) values ('Striped Sweater', 45.00, 4);
+insert into product (product_name, sell_price, category_id) values ('Yellow Track Suit', 135.00, 4);
+insert into product (product_name, sell_price, category_id) values ('White Blouse', 20.00, 4);
 -- MENS
-insert into product (productid, product_name, sell_price, category_id) values (30, 'Camo Down Vest', 325.00, 5);
-insert into product (productid, product_name, sell_price, category_id) values (31, 'Floral T-shirt', 20.00, 5);
-insert into product (productid, product_name, sell_price, category_id) values (32, 'Black & White Longsleeve', 25.00, 5);
-insert into product (productid, product_name, sell_price, category_id) values (33, 'Pink T-shirt', 25.00, 5);
-insert into product (productid, product_name, sell_price, category_id) values (34, 'Jean Long Sleeve', 40.00, 5);
-insert into product (productid, product_name, sell_price, category_id) values (35, 'Burgundy T-shirt', 25.00, 5);
+insert into product (product_name, sell_price, category_id) values ('Camo Down Vest', 325.00, 5);
+insert into product (product_name, sell_price, category_id) values ('Floral T-shirt', 20.00, 5);
+insert into product (product_name, sell_price, category_id) values ('Black & White Longsleeve', 25.00, 5);
+insert into product (product_name, sell_price, category_id) values ('Pink T-shirt', 25.00, 5);
+insert into product (product_name, sell_price, category_id) values ('Jean Long Sleeve', 40.00, 5);
+insert into product (product_name, sell_price, category_id) values ('Burgundy T-shirt', 25.00, 5);
 
 create table costprice(
     productid BIGSERIAL UNIQUE,
