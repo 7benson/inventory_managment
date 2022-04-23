@@ -1,5 +1,6 @@
 create database inventory;
 \c inventory;
+create extension pgcrypto;
 
 create table supplier (
 	supplierid BIGSERIAL PRIMARY KEY UNIQUE,
@@ -57,7 +58,7 @@ create table customer (
 
 create table password(
     customer_id BIGSERIAL UNIQUE,
-    password VARCHAR(50)  NOT NULL,
+    password text NOT NULL,
     CONSTRAINT FK_CustomerID FOREIGN KEY (customer_id) REFERENCES customer(id)
 );
 

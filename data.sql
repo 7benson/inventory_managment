@@ -3,6 +3,7 @@ drop database inventory;
 
 create database inventory;
 \c inventory;
+create extension pgcrypto;
 
 create table supplier (
 	supplierid BIGSERIAL PRIMARY KEY UNIQUE,
@@ -41,8 +42,10 @@ insert into category (category_id, category_name) values (3, 'SNEAKERS');
 insert into category (category_id, category_name) values (4, 'WOMENS');
 insert into category (category_id, category_name) values (5, 'MENS');
 
+-- Rating, Description, User reviews
+
 create table product (
-	productid BIGSERIAL PRIMARY KEY UNIQUE,
+	productid BIGSERIAL PRIMARY KEY ,
 	product_name VARCHAR(50) NOT NULL,
 	sell_price DECIMAL(6,2) NOT NULL,
 	category_id INT NOT NULL,
@@ -192,9 +195,10 @@ create table purchaseinfo(
 );
 
 create table customer (
-	id BIGSERIAL PRIMARY KEY UNIQUE,
-	name VARCHAR(100) NOT NULL,
-	email VARCHAR(100) NOT NULL
+	id BIGSERIAL PRIMARY KEY UNIQUE ,
+	name text NOT NULL,
+	email text NOT NULL,
+    CHECK (email ~ '^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+[.][A-Za-z]+$')
 );
 insert into customer (id, name, email) values (1, 'Aubrie Raubenheim', 'c@c.com');
 insert into customer (id, name, email) values (2, 'Salvador Cockran', 'scockran1@cloudflare.com');
@@ -204,14 +208,14 @@ insert into customer (id, name, email) values (5, 'Calvin Oldacre', 'coldacre4@c
 
 create table password(
     customer_id BIGSERIAL UNIQUE,
-    password VARCHAR(50)  NOT NULL,
+    password text NOT NULL,
     CONSTRAINT FK_CustomerID FOREIGN KEY (customer_id) REFERENCES customer(id)
 );
-insert into password (customer_id,password) values (1,'root');
-insert into password (customer_id,password) values (2,'root');
-insert into password (customer_id,password) values (3,'root');
-insert into password (customer_id,password) values (4,'root');
-insert into password (customer_id,password) values (5,'root');
+insert into password (customer_id,password) values (1,crypt('root',gen_salt('md5')));
+insert into password (customer_id,password) values (2,crypt('root',gen_salt('md5')));
+insert into password (customer_id,password) values (3,crypt('root',gen_salt('md5')));
+insert into password (customer_id,password) values (4,crypt('root',gen_salt('md5')));
+insert into password (customer_id,password) values (5,crypt('root',gen_salt('md5')));
 
 
 create table salesinfo(

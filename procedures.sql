@@ -96,7 +96,7 @@ end;$$;
 call customer_purchase(2,1,2,'debit card');
 
 -- profit of the inventory
-create function profit()
+create function pnl()
 returns int
 language plpgsql
 as $$
@@ -114,6 +114,24 @@ begin
    return (revenue_amount-purchase_amount);
 end;
 $$;
-select profit();
+select pnl();
 
+-- verify login credentials of a customer
+drop function verify_credentials(text,text);
+create function verify_credentials(email_inp text,pwd text)
+returns int
+language plpgsql
+as $$
+declare
+    verified int;
+begin
+   
+   select 1 into verified from customer
+   inner join password on password.customer_id=customer.id
+        where customer.email=email_inp and customer.id=password.customer_id
+        and password.password=crypt(pwd,password.password);
+        return COALESCE(verified,0);
+end;
+$$;
+select verify_credentials('c@c.com','root');
 
