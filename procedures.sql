@@ -14,10 +14,13 @@ end;$$;
 call add_category(7,'shoes');
 
 -- Adding new product
+
+drop procedure add_product;
+
 create or replace procedure add_product(
     product_name_inp VARCHAR(50),
     cost_price_inp DECIMAL(6,2),
-    sell_price_inp DECIMAL(6,2),
+    mrp_inp DECIMAL(6,2),
     category_id_inp INT
 )
 language plpgsql
@@ -26,17 +29,24 @@ declare
     max_product_id int;
 begin
 
-    select max(productid) into max_product_id
-    from product;
+    -- select max(productid) into max_product_id
+    -- from product;
 
-    insert into product(productid,product_name,sell_price,category_id)
-    values (max_product_id+1,product_name_inp,sell_price_inp,category_id_inp);
+    -- insert into product(productid,product_name,mrp,category_id)
+    -- values (max_product_id+1,product_name_inp,mrp_inp,category_id_inp);
 
-    insert into costprice(productid,cost_price)
-    values (max_product_id+1,cost_price_inp);
+    -- insert into costprice(productid,cost_price)
+    -- values (max_product_id+1,cost_price_inp);
+    
+    with rows as (
+        INSERT INTO product(product_name,mrp,category_id) VALUES (product_name_inp,mrp_inp,category_id_inp) RETURNING productid
+    )
+    INSERT INTO costprice(productid,cost_price)
+    SELECT (productid,cost_price_inp)
+    FROM rows
 
-    insert into currentstock(productid,quantity)
-    values (max_product_id+1,0);
+    -- insert into currentstock(productid,quantity)
+    -- values (max_product_id+1,0);
 
 commit;
 end;$$;
@@ -79,17 +89,17 @@ create or replace procedure customer_purchase(
 language plpgsql    
 as $$
 declare 
-    sell_price_local int;
+    mrp_local int;
 begin
 
     update currentstock set quantity=quantity-quantity_inp where productid = productid_inp;
     
-    select sell_price into sell_price_local
+    select mrp into mrp_local
     from product
     where productid=productid_inp;
     
     insert into salesinfo(productid,customer_id,quantity,totalcost,payment_method)
-    values (productid_inp,customer_id_inp,quantity_inp,sell_price_local*quantity_inp,payment_method_inp);
+    values (productid_inp,customer_id_inp,quantity_inp,mrp_local*quantity_inp,payment_method_inp);
 commit;
 end;$$;
 
