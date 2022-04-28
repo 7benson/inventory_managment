@@ -14,7 +14,7 @@ end;$$;
 call add_category(7,'shoes');
 
 -- adding new sub-category
-create and replace procedure add_sub_category(
+create or replace procedure add_sub_category(
     id_inp int,
     name_inp text,
     cat_id_inp int
@@ -159,9 +159,7 @@ declare
 begin
    
    select 1 into verified from customer
-   inner join password on password.customer_id=customer.id
-        where customer.email=email_inp and customer.id=password.customer_id
-        and password.password=crypt(pwd,password.password);
+        where customer.email=email_inp and customer.password=crypt(pwd,customer.password);
         return COALESCE(verified,0);
 end;
 $$;

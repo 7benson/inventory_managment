@@ -93,8 +93,7 @@ create table offers(
     offer_discount int NOT NULL,
     type text not null,
     min_purchase int,
-    CHECK (offer_discount>=0 or offer_discount<100),
-    CONSTRAINT FK_Productid FOREIGN KEY (productid) REFERENCES product(productid)
+    CHECK (offer_discount>=0 or offer_discount<100)
 );
 
 create table purchaseinfo(
@@ -141,6 +140,17 @@ create table customer_addresses(
     address_id bigserial not null,
     CONSTRAINT FK_CustomerId FOREIGN KEY (customer_id) REFERENCES customer(id),
     CONSTRAINT FK_AddressId FOREIGN KEY (address_id) REFERENCES address(address_id)
+);
+create table paymentMethods(
+    id bigserial,
+    customer_id bigserial,
+    card_number text,
+    name_on_card text,
+    card_vendor text,
+    upi_id text,
+    expiry_date date,
+    UNIQUE(customer_id,id),
+    CONSTRAINT FK_CustomerCode FOREIGN KEY (customer_id) REFERENCES customer(id)
 );
 create table salesinfo(
     saleid BIGSERIAL PRIMARY KEY UNIQUE,

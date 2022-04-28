@@ -48,6 +48,15 @@ create or replace function update_sell_price()
 returns trigger
 as $$
 begin
+
+    if exists (select * from productCombinations where 
+    sell_price=round(new.mrp*cast((cast(1.0 as float)-(cast(new.discount as float) /cast(100 as float))) as float)::numeric,2)
+    and productid=new.productid
+    and id=new.id)
+    then
+        return null;
+    end if;
+
     update productCombinations
     set sell_price=round(new.mrp*cast((cast(1.0 as float)-(cast(new.discount as float) /cast(100 as float))) as float)::numeric,2)
     where productid=new.productid
@@ -63,11 +72,11 @@ on productCombinations
 for each row
 execute procedure update_sell_price();
 
--- create trigger update_sell_price_up
--- after update
--- on productCombinations
--- for each row
--- execute procedure update_sell_price();
+create trigger update_sell_price_up
+after update
+on productCombinations
+for each row
+execute procedure update_sell_price();
 
 -- update rating of the product
 drop trigger update_rating on reviews;

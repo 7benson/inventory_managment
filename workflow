@@ -1,4 +1,7 @@
 init.sql
 triggers.sql
-procedures.sql
 data.sql
+procedures.sql
+views.sql
+indices.sql
+roles.sql

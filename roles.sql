@@ -1,9 +1,9 @@
 --  roles : dbadmin, user, manager
+
 create role dbadmin superuser login password 'root';
 
 create role customer;
 grant select on 
-address,
 category,
 subCategory,
 product,
@@ -15,6 +15,8 @@ offers,
 cartItems,
 reviews,
 customer_addresses,
+paymentMethods,
+customerAddresses,
 salesinfo to customer;
 
 create role manager;

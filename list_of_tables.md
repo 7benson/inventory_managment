@@ -18,4 +18,8 @@ salesinfo
 managers
 paymentMethods
 
--- Views
+-- views
+productCombinationsCustomerView
+passwordsHiddenCustomersTableView
+customerAddresses
+
