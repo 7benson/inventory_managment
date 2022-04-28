@@ -1,5 +1,7 @@
 import psycopg2
 
+# def addProduct(productId,name,brand,category_id,sub_cat_id,path_to_preview_img,description,returnable=True,cash_on_delivery=True):
+
 
 def write_blob(part_id, path_to_file, file_extension):
     """ insert a BLOB into a table """

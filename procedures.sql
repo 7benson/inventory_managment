@@ -13,51 +13,28 @@ end;$$;
 
 call add_category(7,'shoes');
 
--- Adding new product
-
-drop procedure add_product;
-
-create or replace procedure add_product(
-    product_name_inp VARCHAR(50),
-    cost_price_inp DECIMAL(6,2),
-    mrp_inp DECIMAL(6,2),
-    category_id_inp INT
+-- adding new sub-category
+create and replace procedure add_sub_category(
+    id_inp int,
+    name_inp text,
+    cat_id_inp int
 )
 language plpgsql
 as $$
-declare 
-    max_product_id int;
 begin
-
-    -- select max(productid) into max_product_id
-    -- from product;
-
-    -- insert into product(productid,product_name,mrp,category_id)
-    -- values (max_product_id+1,product_name_inp,mrp_inp,category_id_inp);
-
-    -- insert into costprice(productid,cost_price)
-    -- values (max_product_id+1,cost_price_inp);
-    
-    with rows as (
-        INSERT INTO product(product_name,mrp,category_id) VALUES (product_name_inp,mrp_inp,category_id_inp) RETURNING productid
-    )
-    INSERT INTO costprice(productid,cost_price)
-    SELECT (productid,cost_price_inp)
-    FROM rows
-
-    -- insert into currentstock(productid,quantity)
-    -- values (max_product_id+1,0);
-
+    insert into subCategory(id, category_id, sub_category_name) 
+    values (id_inp,cat_id_inp,name_inp);
 commit;
 end;$$;
 
-call add_product('nike shoe',1,5,7);
+call add_sub_category(4,'Mobiles',3);
 
 -- purchase_from_supplier
 create or replace procedure purchase_from_supplier(
     supplierid_inp INT,
     productid_inp int,
-    quantity_inp int
+    quantity_inp int,
+    product_combination_id_inp int
 )
 language plpgsql    
 as $$
@@ -66,44 +43,89 @@ declare
 begin
 
     select cost_price into cost
-    from costprice
-    where productid=productid_inp;
+    from productCombinations
+    where productid=productid_inp
+    and id=product_combination_id_inp;
+    -- raise notice 'Value: %', cost;
 
-    insert into purchaseinfo(supplierid,productid,quantity,totalcost)
-    values (supplierid_inp,productid_inp,quantity_inp,quantity_inp*cost);
+    insert into purchaseinfo(supplierid,productid,quantity,totalcost,product_combination_id)
+    values (supplierid_inp,productid_inp,quantity_inp,quantity_inp*cost,product_combination_id_inp);
 
-    update currentstock set quantity=quantity+quantity_inp where productid = productid_inp;
+    update productCombinations set availableStock=availableStock+quantity_inp 
+    where productid=productid_inp and
+    id = product_combination_id_inp;
 
     commit;
 end;$$;
 
-call purchase_from_supplier(1,2,5);
+call purchase_from_supplier(1,2,5,1);
 
 -- customer_purchase
 create or replace procedure customer_purchase(
     productid_inp int,
     customer_id_inp int,
     quantity_inp int,
-    payment_method_inp varchar(45)
+    payment_method_inp varchar(45),
+    product_combination_id_inp int,
+    payment_method_id_inp int
 )
 language plpgsql    
 as $$
 declare 
-    mrp_local int;
+    sell_price_local int;
+    availableStock_local int;
+    offer_discount_local int;
+    final_price_after_discount int;
 begin
 
-    update currentstock set quantity=quantity-quantity_inp where productid = productid_inp;
+    select availableStock,sell_price into availableStock_local,sell_price_local
+    from productCombinations
+    where productid=productid_inp and id=product_combination_id_inp;
     
-    select mrp into mrp_local
-    from product
-    where productid=productid_inp;
-    
-    insert into salesinfo(productid,customer_id,quantity,totalcost,payment_method)
-    values (productid_inp,customer_id_inp,quantity_inp,mrp_local*quantity_inp,payment_method_inp);
+    -- check if the stock is available
+    if (availableStock_local < quantity_inp)
+    then
+    raise notice 'Availiable stock: %', availableStock;
+    end if;
+
+    -- Offers discount
+    select offer_discount into offer_discount_local
+    from offers 
+    where min_purchase <= sell_price_local 
+    order by offer_discount desc 
+    limit 1;
+
+    if offer_discount_local is not null
+    then
+    select round(sell_price_local*(cast((cast(1 as float)-cast(cast(offer_discount_local as float)/cast(100 as float) as float)) as float))::numeric,2)
+    into final_price_after_discount;
+    else 
+    select sell_price_local into final_price_after_discount;
+    end if;
+
+    -- raise notice 'sell_price_local %', sell_price_local;
+    -- raise notice 'final_price_after_discount %', final_price_after_discount;
+
+    if not exists (select id from paymentMethods 
+    where customer_id=customer_id_inp and
+    id=payment_method_id_inp)
+    then
+        raise notice 'False Payment Request';
+        return ;
+    end if;
+
+    update productCombinations 
+    set availableStock=availableStock-quantity_inp
+    where productid=productid_inp and id=product_combination_id_inp;
+
+    insert into salesinfo(productid,product_combination_id,customer_id,quantity,totalcost,final_cost_after_discount,payment_method,stateOfPackage,payment_method_id)
+    values (productid_inp,product_combination_id_inp,customer_id_inp,quantity_inp,sell_price_local*quantity_inp,
+    final_price_after_discount*quantity_inp,payment_method_inp,'Waiting to Dispatch',payment_method_id_inp);
+
 commit;
 end;$$;
 
-call customer_purchase(2,1,2,'debit card');
+call customer_purchase(2,1,2,'debit card',1,1);
 
 -- profit of the inventory
 create function pnl()
@@ -118,7 +140,7 @@ begin
    select sum(totalcost) into purchase_amount
    from purchaseinfo;
    
-   select sum(totalcost) into revenue_amount
+   select sum(final_cost_after_discount) into revenue_amount
    from salesinfo;
 
    return (revenue_amount-purchase_amount);

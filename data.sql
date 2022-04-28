@@ -54,7 +54,6 @@ create table category (
 insert into category (category_id, category_name) values (1, 'MENS');
 insert into category (category_id, category_name) values (2, 'WOMENS');
 insert into category (category_id, category_name) values (3, 'ELECTRONICS');
-insert into category (category_id, category_name) values (4, 'BOOKS');
 
 create table subCategory(
     id bigserial PRIMARY KEY,
@@ -65,7 +64,6 @@ create table subCategory(
 insert into subCategory(id, category_id, sub_category_name) values (1,1,'Shirts');
 insert into subCategory(id, category_id, sub_category_name) values (2,1,'Jeans');
 insert into subCategory(id, category_id, sub_category_name) values (3,2,'Watches');
-insert into subCategory(id, category_id, sub_category_name) values (4,3,'Mobiles');
 
 create table product (
 	productid BIGSERIAL PRIMARY KEY ,
@@ -107,6 +105,7 @@ create table image_gallery(
     file_extension text
 );
 -- Insert images using python
+\! python 'C:/Users/jayan/OneDrive/Desktop/pulled/inventory_management_dbms/image.py'
 
 create table product_gallery_mapper(
     variation_id bigserial,
@@ -119,101 +118,125 @@ insert into product_gallery_mapper values (1,1,1);
 insert into product_gallery_mapper values (1,2,1);
 insert into product_gallery_mapper values (2,3,1);
 
-insert into product_gallery_mapper values (3,4,2);
-insert into product_gallery_mapper values (3,5,2);
-insert into product_gallery_mapper values (4,6,2);
+insert into product_gallery_mapper values (1,4,2);
+insert into product_gallery_mapper values (1,5,2);
+insert into product_gallery_mapper values (2,6,2);
 
 -- mens jeans
-insert into product_gallery_mapper values (5,7,3);
-insert into product_gallery_mapper values (5,8,3);
-insert into product_gallery_mapper values (6,9,3);
+insert into product_gallery_mapper values (1,7,3);
+insert into product_gallery_mapper values (2,8,3);
+insert into product_gallery_mapper values (2,9,3);
 
-insert into product_gallery_mapper values (7,10,4);
-insert into product_gallery_mapper values (8,11,4);
-insert into product_gallery_mapper values (8,12,4);
+insert into product_gallery_mapper values (1,10,4);
+insert into product_gallery_mapper values (2,11,4);
+insert into product_gallery_mapper values (1,12,4);
 
 
 create table productVariations(
-    id bigserial PRIMARY key,
+    id bigserial,
     productid bigserial not null,
     variationName text not null,
+    PRIMARY KEY (id,productid),
     CONSTRAINT FK_Productid FOREIGN KEY (productid) REFERENCES product(productid)
 );
 -- mens shirts variations
 insert into productVariations(id,productid,variationName) values (1,1,'blue color');
 insert into productVariations(id,productid,variationName) values (2,1,'green color');
 
-insert into productVariations(id,productid,variationName) values (3,2,'blue color');
-insert into productVariations(id,productid,variationName) values (4,2,'green color');
+insert into productVariations(id,productid,variationName) values (1,2,'blue color');
+insert into productVariations(id,productid,variationName) values (2,2,'green color');
 
 -- mens jeans vartiation
-insert into productVariations(id,productid,variationName) values (5,3,'skinny');
-insert into productVariations(id,productid,variationName) values (6,3,'regular');
+insert into productVariations(id,productid,variationName) values (1,3,'skinny');
+insert into productVariations(id,productid,variationName) values (2,3,'regular');
 
-insert into productVariations(id,productid,variationName) values (7,4,'skinny');
-insert into productVariations(id,productid,variationName) values (8,4,'regular');
+insert into productVariations(id,productid,variationName) values (1,4,'skinny');
+insert into productVariations(id,productid,variationName) values (2,4,'regular');
 
+drop table productCombinations;
 create table productCombinations(
-    id BIGSERIAL PRIMARY key,
+    id BIGSERIAL,
     combination_string text not null,
     productid bigserial not null,
     
     mrp DECIMAL(6,2) NOT NULL,
     discount int not null default 0,
-    sell_price DECIMAL(6,2),
+    sell_price float,
 	
+	cost_price DECIMAL(6,2) NOT NULL,
+
     availableStock int not null,
+    PRIMARY key (id,productid),
     CONSTRAINT FK_Productid FOREIGN KEY (productid) REFERENCES product(productid)
 );
-insert into productCombinations(id,combination_string,productid,mrp,discount,availableStock) values(1,'s-blue',1,2000,10,10);
-insert into productCombinations(id,combination_string,productid,mrp,discount,availableStock) values(2,'s-green',1,500,12,10);
-insert into productCombinations(id,combination_string,productid,mrp,discount,availableStock) values(3,'m-blue',1,2500,16,4);
-insert into productCombinations(id,combination_string,productid,mrp,discount,availableStock) values(4,'m-green',1,2060,16,13);
-insert into productCombinations(id,combination_string,productid,mrp,discount,availableStock) values(5,'l-blue',1,2300,20,10);
-insert into productCombinations(id,combination_string,productid,mrp,discount,availableStock) values(6,'l-green',1,2550,30,10);
 
-insert into productCombinations(id,combination_string,productid,mrp,discount,availableStock) values(7,'s-blue',2,2000,10,10);
-insert into productCombinations(id,combination_string,productid,mrp,discount,availableStock) values(8,'s-green',2,500,12,10);
-insert into productCombinations(id,combination_string,productid,mrp,discount,availableStock) values(9,'m-blue',2,2500,16,4);
-insert into productCombinations(id,combination_string,productid,mrp,discount,availableStock) values(10,'m-green',2,2060,16,13);
-insert into productCombinations(id,combination_string,productid,mrp,discount,availableStock) values(11,'l-blue',2,2300,20,10);
-insert into productCombinations(id,combination_string,productid,mrp,discount,availableStock) values(12,'l-green',2,2550,30,10);
+-- Update selling price acc to discount
+drop trigger update_sell_price on productCombinations;
 
-insert into productCombinations(id,combination_string,productid,mrp,discount,availableStock) values(13,'30-skinny',3,1250,10,10);
-insert into productCombinations(id,combination_string,productid,mrp,discount,availableStock) values(14,'32-skinny',3,1240,20,14);
-insert into productCombinations(id,combination_string,productid,mrp,discount,availableStock) values(15,'30-regular',3,1150,30,30);
-insert into productCombinations(id,combination_string,productid,mrp,discount,availableStock) values(16,'32-regular',3,1270,20,54);
+create or replace function update_sell_price()
+returns trigger
+as $$
+begin
+    update productCombinations
+    set sell_price=round(new.mrp*cast((cast(1.0 as float)-(cast(new.discount as float) /cast(100 as float))) as float)::numeric,2)
+    where productid=new.productid
+    and id=new.id;
+    return new;
+end;
+$$
+language plpgsql;
 
-insert into productCombinations(id,combination_string,productid,mrp,discount,availableStock) values(17,'30-skinny',4,1124,10,10);
-insert into productCombinations(id,combination_string,productid,mrp,discount,availableStock) values(18,'32-skinny',4,1422,20,14);
-insert into productCombinations(id,combination_string,productid,mrp,discount,availableStock) values(19,'30-regular',4,1624,30,30);
-insert into productCombinations(id,combination_string,productid,mrp,discount,availableStock) values(20,'32-regular',4,1456,20,54);
+create trigger update_sell_price
+after insert
+on productCombinations
+for each row
+execute procedure update_sell_price();
+
+insert into productCombinations(id,combination_string,productid,mrp,discount,availableStock,cost_price) values(1,'s-blue',1,2000,10,10,500);
+insert into productCombinations(id,combination_string,productid,mrp,discount,availableStock,cost_price) values(2,'s-green',1,500,12,10,500);
+insert into productCombinations(id,combination_string,productid,mrp,discount,availableStock,cost_price) values(3,'m-blue',1,2500,16,4,500);
+insert into productCombinations(id,combination_string,productid,mrp,discount,availableStock,cost_price) values(4,'m-green',1,2060,16,13,500);
+insert into productCombinations(id,combination_string,productid,mrp,discount,availableStock,cost_price) values(5,'l-blue',1,2300,20,10,500);
+insert into productCombinations(id,combination_string,productid,mrp,discount,availableStock,cost_price) values(6,'l-green',1,2550,30,10,500);
+
+insert into productCombinations(id,combination_string,productid,mrp,discount,availableStock,cost_price) values(1,'s-blue',2,2000,10,10,522);
+insert into productCombinations(id,combination_string,productid,mrp,discount,availableStock,cost_price) values(2,'s-green',2,500,12,10,522);
+insert into productCombinations(id,combination_string,productid,mrp,discount,availableStock,cost_price) values(3,'m-blue',2,2500,16,4,522);
+insert into productCombinations(id,combination_string,productid,mrp,discount,availableStock,cost_price) values(4,'m-green',2,2060,16,13,522);
+insert into productCombinations(id,combination_string,productid,mrp,discount,availableStock,cost_price) values(5,'l-blue',2,2300,20,10,522);
+insert into productCombinations(id,combination_string,productid,mrp,discount,availableStock,cost_price) values(6,'l-green',2,2550,30,10,522);
+
+insert into productCombinations(id,combination_string,productid,mrp,discount,availableStock,cost_price) values(1,'30-skinny',3,1250,10,10,532);
+insert into productCombinations(id,combination_string,productid,mrp,discount,availableStock,cost_price) values(2,'32-skinny',3,1240,20,14,532);
+insert into productCombinations(id,combination_string,productid,mrp,discount,availableStock,cost_price) values(3,'30-regular',3,1150,30,30,532);
+insert into productCombinations(id,combination_string,productid,mrp,discount,availableStock,cost_price) values(4,'32-regular',3,1270,20,54,532);
+
+insert into productCombinations(id,combination_string,productid,mrp,discount,availableStock,cost_price) values(1,'30-skinny',4,1124,10,10,532);
+insert into productCombinations(id,combination_string,productid,mrp,discount,availableStock,cost_price) values(2,'32-skinny',4,1422,20,14,532);
+insert into productCombinations(id,combination_string,productid,mrp,discount,availableStock,cost_price) values(3,'30-regular',4,1624,30,30,532);
+insert into productCombinations(id,combination_string,productid,mrp,discount,availableStock,cost_price) values(4,'32-regular',4,1456,20,54,532);
 
 create table offers(
-    productid BIGSERIAL,
-    offer_id BIGSERIAL,
+    offer_id BIGSERIAL PRIMARY key,
     offer_decription text NOT NULL,
     offer_discount int NOT NULL,
-    CHECK (offer_discount>=0 or offer_discount<100),
-    CONSTRAINT FK_Productid FOREIGN KEY (productid) REFERENCES product(productid)
+    type text not null,
+    min_purchase int,
+    CHECK (offer_discount>=0 or offer_discount<100)
 );
 
-create table costprice(
-    cost_price_id bigserial PRIMARY key,
-    product_combination_id BIGSERIAL not null,
-    productid bigserial not null,
-	cost_price DECIMAL(6,2) NOT NULL,
-    date_time text default TIMEOFDAY(),
-    CONSTRAINT FK_Productid FOREIGN KEY (product_combination_id) REFERENCES productCombinations(id),
-    CONSTRAINT FK_ProductCode FOREIGN KEY (productid) REFERENCES product(productid),
-    CHECK (cost_price>0)
-);
-insert into costprice(cost_price_id,product_combination_id,productid,cost_price) values(1,1,1,1000);
-insert into costprice(cost_price_id,product_combination_id,productid,cost_price) values(2,2,1,200);
-insert into costprice(cost_price_id,product_combination_id,productid,cost_price) values(3,3,1,1520);
-insert into costprice(cost_price_id,product_combination_id,productid,cost_price) values(4,4,1,1220);
-insert into costprice(cost_price_id,product_combination_id,productid,cost_price) values(5,5,1,1420);
-insert into costprice(cost_price_id,product_combination_id,productid,cost_price) values(6,6,1,1520);
+insert into offers(offer_decription,offer_discount,type,min_purchase) 
+values ('5% back on this product with Amazon Pay ICICI Bank credit card',5,'CASHBACK',1000);
+
+insert into offers(offer_decription,offer_discount,type,min_purchase) 
+values ('Amazon Pay Later Reward',15,'CASHBACK',12000);
+
+
+insert into offers(offer_decription,offer_discount,type,min_purchase) 
+values ('10% Instant Discount up to INR 1500 on Federal Bank',4,'BANK OFFER',5000);
+
+insert into offers(offer_decription,offer_discount,type,min_purchase) 
+values ('10% Instant Discount up to INR 500 on Bank of Baroda',2,'BANK OFFER',2000);
 
 
 create table purchaseinfo(
@@ -226,7 +249,6 @@ create table purchaseinfo(
     product_combination_id BIGSERIAL not null,
     CONSTRAINT FK_ProductId FOREIGN KEY (productid) REFERENCES product(productid),
     CONSTRAINT FK_SupplierId FOREIGN KEY (supplierid) REFERENCES supplier(supplierid),
-    CONSTRAINT FK_ProductCombinationid FOREIGN KEY (product_combination_id) REFERENCES productCombinations(id),
     CHECK(quantity>0),
     CHECK(totalcost>0)
 );
@@ -276,24 +298,41 @@ insert into customer_addresses values (2,10);
 insert into customer_addresses values (1,6);
 insert into customer_addresses values (4,8);
 
+create table paymentMethods(
+    id bigserial,
+    customer_id bigserial,
+    card_number text,
+    name_on_card text,
+    card_vendor text,
+    upi_id text,
+    expiry_date date,
+    UNIQUE(customer_id,id),
+    CONSTRAINT FK_CustomerCode FOREIGN KEY (customer_id) REFERENCES customer(id)
+);
+insert into paymentMethods(customer_id,card_number,name_on_card,expiry_date) values(1,'4138260595705002','Aubrie Raubenheim','2025-04-01');
+insert into paymentMethods(customer_id,card_number,name_on_card,expiry_date) values(2,'5115050795071667','Salvador Cockran','2025-04-01');
+insert into paymentMethods(customer_id,card_number,name_on_card,expiry_date) values(3,'5176900269873269','Kamillah Neward','2025-04-01');
+insert into paymentMethods(customer_id,card_number,name_on_card,expiry_date) values(4,'4811851595501906','Ninon Frissell','2025-04-01');
+insert into paymentMethods(customer_id,card_number,name_on_card,expiry_date) values(5,'5132737686930188','Calvin Oldacre','2025-04-01');
+
 create table salesinfo(
     saleid BIGSERIAL PRIMARY KEY UNIQUE,
     date varchar(45) NOT NULL default CURRENT_TIMESTAMP,
     productid INT NOT NULL,
     product_combination_id bigserial not null,
     customer_id BIGSERIAL UNIQUE,
+    payment_method_id  BIGSERIAL not null,
     quantity int not null,
-    totalcost int not null,
-    final_cost_after_discount int not null,
+    totalcost float not null,
+    final_cost_after_discount float not null,
     payment_method varchar(45) not null default 'credit card',
     stateOfPackage text not null,
-    trackingId text not null, 
+    trackingId text, 
     CONSTRAINT FK_ProductId FOREIGN KEY (productid) REFERENCES product(productid),
-    CONSTRAINT FK_ProductCombinationid FOREIGN KEY (product_combination_id) REFERENCES productCombinations(id),
     CONSTRAINT FK_CustomerCode FOREIGN KEY (customer_id) REFERENCES customer(id),
     CHECK(quantity>0),
     CHECK(totalcost>0),
-    CHECK(final_cost_after_discount>0)
+    CHECK(final_cost_after_discount>=0)
 );
 
 create table managers(

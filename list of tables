@@ -1,0 +1,21 @@
+-- Tables
+address
+supplier
+category
+subCategory
+product
+image_gallery
+product_gallery_mapper
+productVariations
+productCombinations
+offers
+purchaseinfo
+customer
+cartItems
+reviews
+customer_addresses
+salesinfo
+managers
+paymentMethods
+
+-- Views

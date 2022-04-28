@@ -2,7 +2,35 @@
 create role dbadmin superuser login password 'root';
 
 create role customer;
-grant select on product, category, currentstock to customer;
+grant select on 
+address,
+category,
+subCategory,
+product,
+image_gallery,
+product_gallery_mapper,
+productVariations,
+productCombinationsCustomerView,
+offers,
+cartItems,
+reviews,
+customer_addresses,
+salesinfo to customer;
 
-create role manager login password 'root';
-grant all on category,costprice,currentstock,customer,product,purchaseinfo,salesinfo,supplier to manager;
+create role manager;
+grant all on 
+address,
+supplier,
+category,
+subCategory,
+product,
+image_gallery,
+product_gallery_mapper,
+productVariations,
+productCombinations,
+offers,
+passwordsHiddenCustomersTableView,
+purchaseinfo,
+reviews,
+salesinfo
+to manager;
