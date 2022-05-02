@@ -43,7 +43,8 @@ insert into product(productid,product_name,brand_name,category_id,subcategory_id
 values (4,'Peter England Mens Skinny Jeans','Peter England',1,2,' ',0,1,'waist_size-fit');
 
 -- Insert images using python
-\! python 'C:/Users/jayan/OneDrive/Desktop/pulled/inventory_management_dbms/image.py'
+\! conda activate py38
+\! conda 'C:/Users/jayan/OneDrive/Desktop/pulled/inventory_management_dbms/image.py'
 -- Or manually
 
 --mens shirts 

@@ -12,7 +12,7 @@ select id,name,email
 from customer;
 
 -- customers addresses
-create view customerAddresses
+create view customerAddresses as
 select * from address where address.address_id in 
 (select address_id from customer_addresses);
 
