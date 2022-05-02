@@ -29,18 +29,18 @@ insert into subCategory(id, category_id, sub_category_name) values (2,1,'Jeans')
 insert into subCategory(id, category_id, sub_category_name) values (3,2,'Watches');
 
 -- mens , shirts
-insert into product(productid,product_name,brand_name,category_id,subcategory_id,description,returnable,cashOnDelivery)
-values (1,'U.S. POLO ASSN. Mens Regular fit Casual Shirt','U.S. POLO ASSN.',1,1,'Mens full sleeves.',1,1);
+insert into product(productid,product_name,brand_name,category_id,subcategory_id,description,returnable,cashOnDelivery,combination_string_format)
+values (1,'U.S. POLO ASSN. Mens Regular fit Casual Shirt','U.S. POLO ASSN.',1,1,'Mens full sleeves.',1,1,'size-color');
 
-insert into product(productid,product_name,brand_name,category_id,subcategory_id,description,returnable,cashOnDelivery)
-values (2,'Van Heusen Mens Slim Shirt','Van Heusen',1,1,'When it comes to mens wear, Van Heusen stands for class, elegance and status.',1,0);
+insert into product(productid,product_name,brand_name,category_id,subcategory_id,description,returnable,cashOnDelivery,combination_string_format)
+values (2,'Van Heusen Mens Slim Shirt','Van Heusen',1,1,'When it comes to mens wear, Van Heusen stands for class, elegance and status.',1,0,'size-color');
 
 -- mens, jeans
-insert into product(productid,product_name,brand_name,category_id,subcategory_id,description,returnable,cashOnDelivery)
-values (3,'Peter England Men Jeans','Peter England',1,2,' ',0,0);
+insert into product(productid,product_name,brand_name,category_id,subcategory_id,description,returnable,cashOnDelivery,combination_string_format)
+values (3,'Peter England Men Jeans','Peter England',1,2,' ',0,0,'waist_size-fit');
 
-insert into product(productid,product_name,brand_name,category_id,subcategory_id,description,returnable,cashOnDelivery)
-values (4,'Peter England Mens Skinny Jeans','Peter England',1,2,' ',0,1);
+insert into product(productid,product_name,brand_name,category_id,subcategory_id,description,returnable,cashOnDelivery,combination_string_format)
+values (4,'Peter England Mens Skinny Jeans','Peter England',1,2,' ',0,1,'waist_size-fit');
 
 -- Insert images using python
 \! python 'C:/Users/jayan/OneDrive/Desktop/pulled/inventory_management_dbms/image.py'

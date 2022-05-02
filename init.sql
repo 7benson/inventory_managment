@@ -33,6 +33,13 @@ create table subCategory(
     sub_category_name text not null,
     CONSTRAINT FK_CategoryDd FOREIGN KEY (category_id) REFERENCES category(category_id)
 );
+
+create table image_gallery(
+    id bigserial PRIMARY key,
+    image BYTEA ,
+    file_extension text
+);
+
 create table product (
 	productid BIGSERIAL PRIMARY KEY ,
 	product_name VARCHAR(50) NOT NULL,
@@ -43,6 +50,8 @@ create table product (
     
     preview_img_id int,
 
+    combination_string_format text,
+
     rating numeric(2,1),
     description text,
     returnable int default 1,
@@ -50,18 +59,10 @@ create table product (
     CHECK (returnable=0 or returnable=1),
     CHECK (cashOnDelivery=0 or cashOnDelivery=1),
     CHECK (rating<=5.0 and rating>=0),
-    CONSTRAINT FK_CategoryId FOREIGN KEY (category_id) REFERENCES category(category_id)
-    -- CONSTRAINT FK_ImageGalleryId FOREIGN KEY (preview_img_id) REFERENCES image_gallery(id)
-);
-create table image_gallery(
-    id bigserial PRIMARY key,
-    image BYTEA ,
-    file_extension text
-);
-create table product_gallery_mapper(
-    variation_id bigserial,
-    gallery_id bigserial,
-    product_id bigserial
+    CONSTRAINT FK_CategoryId FOREIGN KEY (category_id) REFERENCES category(category_id),
+    CONSTRAINT FK_subCategoryId FOREIGN KEY (subcategory_id) REFERENCES subCategory(id),
+    CONSTRAINT FK_ImageGalleryId FOREIGN KEY (preview_img_id) REFERENCES image_gallery(id)
+
 );
 
 create table productVariations(
@@ -71,6 +72,15 @@ create table productVariations(
     PRIMARY KEY (id,productid),
     CONSTRAINT FK_Productid FOREIGN KEY (productid) REFERENCES product(productid)
 );
+
+create table product_gallery_mapper(
+    variation_id bigserial,
+    gallery_id bigserial,
+    product_id bigserial,
+    CONSTRAINT FK_Productid FOREIGN KEY (product_id) REFERENCES product(productid),
+    CONSTRAINT FK_ImageGalleryId FOREIGN KEY (gallery_id) REFERENCES image_gallery(id)
+);
+
 create table productCombinations(
     id BIGSERIAL,
     combination_string text not null,
@@ -93,7 +103,7 @@ create table offers(
     offer_discount int NOT NULL,
     type text not null,
     min_purchase int,
-    CHECK (offer_discount>=0 or offer_discount<100)
+    CHECK (offer_discount>=0 and offer_discount<100)
 );
 
 create table purchaseinfo(
@@ -106,6 +116,7 @@ create table purchaseinfo(
     product_combination_id BIGSERIAL not null,
     CONSTRAINT FK_ProductId FOREIGN KEY (productid) REFERENCES product(productid),
     CONSTRAINT FK_SupplierId FOREIGN KEY (supplierid) REFERENCES supplier(supplierid),
+    CONSTRAINT FK_ProductCombination FOREIGN KEY (product_combination_id,productid) REFERENCES productCombinations(id,productid),
     CHECK(quantity>0),
     CHECK(totalcost>0)
 );
@@ -124,6 +135,7 @@ create table cartItems(
     quantity int,
     check(quantity>=1),
     CONSTRAINT FK_customerId FOREIGN KEY (customer_id) REFERENCES customer(id),
+    CONSTRAINT FK_ProductCombination FOREIGN KEY (product_combination_id,productid) REFERENCES productCombinations(id,productid),
     UNIQUE(productid,customer_id,product_combination_id)
 );
 create table reviews(
@@ -161,11 +173,13 @@ create table salesinfo(
     quantity int not null,
     totalcost int not null,
     final_cost_after_discount int not null,
-    payment_method varchar(45) not null default 'credit card',
+    payment_method_id int not null,
     stateOfPackage text not null,
-    trackingId text not null, 
+    trackingId text, 
     CONSTRAINT FK_ProductId FOREIGN KEY (productid) REFERENCES product(productid),
     CONSTRAINT FK_CustomerCode FOREIGN KEY (customer_id) REFERENCES customer(id),
+    CONSTRAINT FK_ProductCombination FOREIGN KEY (product_combination_id,productid) REFERENCES productCombinations(id,productid),
+    CONSTRAINT FK_PaymentMethod FOREIGN KEY (customer_id,payment_method_id) REFERENCES paymentMethods(customer_id,id),
     CHECK(quantity>0),
     CHECK(totalcost>0),
     CHECK(final_cost_after_discount>0)

@@ -27,7 +27,7 @@ begin
 commit;
 end;$$;
 
-call add_sub_category(4,'Mobiles',3);
+call add_sub_category(4,'Mobiles',7);
 
 -- purchase_from_supplier
 create or replace procedure purchase_from_supplier(
@@ -58,14 +58,13 @@ begin
     commit;
 end;$$;
 
-call purchase_from_supplier(1,2,5,1);
+call purchase_from_supplier(1,1,1,1);
 
 -- customer_purchase
 create or replace procedure customer_purchase(
     productid_inp int,
     customer_id_inp int,
     quantity_inp int,
-    payment_method_inp varchar(45),
     product_combination_id_inp int,
     payment_method_id_inp int
 )
@@ -103,8 +102,8 @@ begin
     select sell_price_local into final_price_after_discount;
     end if;
 
-    -- raise notice 'sell_price_local %', sell_price_local;
-    -- raise notice 'final_price_after_discount %', final_price_after_discount;
+    raise notice 'sell_price_local %', sell_price_local;
+    raise notice 'final_price_after_discount %', final_price_after_discount;
 
     if not exists (select id from paymentMethods 
     where customer_id=customer_id_inp and
@@ -118,14 +117,14 @@ begin
     set availableStock=availableStock-quantity_inp
     where productid=productid_inp and id=product_combination_id_inp;
 
-    insert into salesinfo(productid,product_combination_id,customer_id,quantity,totalcost,final_cost_after_discount,payment_method,stateOfPackage,payment_method_id)
+    insert into salesinfo(productid,product_combination_id,customer_id,quantity,totalcost,final_cost_after_discount,stateOfPackage,payment_method_id)
     values (productid_inp,product_combination_id_inp,customer_id_inp,quantity_inp,sell_price_local*quantity_inp,
-    final_price_after_discount*quantity_inp,payment_method_inp,'Waiting to Dispatch',payment_method_id_inp);
+    final_price_after_discount*quantity_inp,'Waiting to Dispatch',payment_method_id_inp);
 
 commit;
 end;$$;
 
-call customer_purchase(2,1,2,'debit card',1,1);
+call customer_purchase(1,1,1,1,1);
 
 -- profit of the inventory
 create function pnl()
